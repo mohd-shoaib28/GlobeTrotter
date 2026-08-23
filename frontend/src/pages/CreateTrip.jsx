@@ -9,6 +9,7 @@ export default function CreateTrip() {
     const [description, setDescription] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+    const [coverPhoto, setCoverPhoto] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -20,7 +21,7 @@ export default function CreateTrip() {
         try {
             const token = localStorage.getItem('token');
             const res = await axios.post('http://localhost:5000/api/trips', 
-                { name, description, start_date: startDate, end_date: endDate },
+                { name, description, start_date: startDate, end_date: endDate, cover_photo: coverPhoto },
                 { headers: { Authorization: `Bearer ${token}` }}
             );
             
@@ -97,6 +98,17 @@ export default function CreateTrip() {
                                 className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white outline-none focus:border-blue-500 transition-colors"
                             />
                         </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Cover Photo URL (Optional)</label>
+                        <input 
+                            type="text" 
+                            placeholder="https://example.com/image.jpg"
+                            value={coverPhoto}
+                            onChange={(e) => setCoverPhoto(e.target.value)}
+                            className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white outline-none focus:border-blue-500 transition-colors"
+                        />
                     </div>
 
                     <div className="pt-4 border-t border-slate-100 dark:border-slate-800">

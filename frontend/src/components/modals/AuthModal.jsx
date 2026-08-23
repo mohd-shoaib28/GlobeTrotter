@@ -31,7 +31,7 @@ export default function AuthModal({ authModal, setAuthModal, onLogin }) {
         setError('');
         try {
             const res = await axios.post('http://localhost:5000/api/auth/login', { email: username, password: loginPassword });
-            onLogin(res.data.user_id, res.data.token, res.data.name);
+            onLogin(res.data.user_id, res.data.token, res.data.name, res.data.role);
         } catch (err) {
             setError(err.response?.data?.error || 'Authentication failed. Please try again.');
         } finally {
@@ -55,7 +55,7 @@ export default function AuthModal({ authModal, setAuthModal, onLogin }) {
             });
             // Automatically log them in after signup
             const loginRes = await axios.post('http://localhost:5000/api/auth/login', { email, password });
-            onLogin(loginRes.data.user_id, loginRes.data.token, loginRes.data.name);
+            onLogin(loginRes.data.user_id, loginRes.data.token, loginRes.data.name, loginRes.data.role);
         } catch (err) {
             setError(err.response?.data?.error || 'Registration failed. Please try again.');
         } finally {

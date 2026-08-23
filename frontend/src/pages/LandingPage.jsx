@@ -38,7 +38,7 @@ export default function LandingPage({ setAuthModal }) {
                         An end-to-end travel planning platform that combines flexibility and interactivity. Add travel stops, estimate budgets automatically, visualize timelines, and share with a community.
                     </p>
 
-                    <div className="flex justify-center gap-4 pt-4">
+                    <div className="flex flex-wrap justify-center gap-4 pt-4">
                         <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
@@ -54,6 +54,14 @@ export default function LandingPage({ setAuthModal }) {
                             className="px-8 py-3.5 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-bold border border-slate-200 dark:border-slate-800 shadow-sm"
                         >
                             Sign In
+                        </motion.button>
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => setAuthModal('login')}
+                            className="px-8 py-3.5 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold border border-slate-900 dark:border-white shadow-sm flex items-center gap-2"
+                        >
+                            Admin Login
                         </motion.button>
                     </div>
                 </motion.div>

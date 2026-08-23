@@ -40,6 +40,7 @@ export default function Dashboard({ userId, userName }) {
     const now = new Date();
     const upcomingTrips = trips.filter(t => !t.start_date || new Date(t.start_date) > now).slice(0, 3);
     const ongoingTrips = trips.filter(t => t.start_date && t.end_date && new Date(t.start_date) <= now && new Date(t.end_date) >= now);
+    const publicTrips = trips.filter(t => t.is_public);
 
     return (
         <div className="p-4 sm:p-6 lg:p-8 space-y-8 max-w-7xl mx-auto">
@@ -90,7 +91,7 @@ export default function Dashboard({ userId, userName }) {
                                 { title: 'Total Trips', val: trips.length, icon: <Map className="text-blue-500" /> },
                                 { title: 'Upcoming', val: upcomingTrips.length, icon: <Calendar className="text-emerald-500" /> },
                                 { title: 'Ongoing', val: ongoingTrips.length, icon: <Activity className="text-amber-500" /> },
-                                { title: 'Saved Places', val: '12', icon: <MapPin className="text-rose-500" /> }
+                                { title: 'Public Trips', val: publicTrips.length, icon: <MapPin className="text-rose-500" /> }
                             ].map((stat, idx) => (
                                 <motion.div key={idx} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: idx * 0.1 }} className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col items-center justify-center text-center">
                                     <div className="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center mb-2">

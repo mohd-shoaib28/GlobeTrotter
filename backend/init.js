@@ -31,8 +31,10 @@ async function initDB() {
         name VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL UNIQUE,
         password_hash VARCHAR(255) NOT NULL,
+        role VARCHAR(50) DEFAULT 'user',
         profile_image VARCHAR(512),
         bio TEXT,
+        language_preference VARCHAR(50) DEFAULT 'en',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `;
@@ -48,6 +50,7 @@ async function initDB() {
         start_date DATE,
         end_date DATE,
         is_public BOOLEAN DEFAULT FALSE,
+        cover_photo VARCHAR(512),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
       )
@@ -61,6 +64,8 @@ async function initDB() {
         trip_id INT NOT NULL,
         city VARCHAR(255) NOT NULL,
         dates VARCHAR(255),
+        info TEXT,
+        budget_estimate DECIMAL(10, 2) DEFAULT 0.00,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (trip_id) REFERENCES Trips(trip_id) ON DELETE CASCADE
       )
@@ -109,6 +114,15 @@ async function initDB() {
 
     // Seed Data
     console.log('Seeding data...');
+    const bcrypt = require('bcryptjs');
+
+    const [existingAdmins] = await conn.query('SELECT * FROM Users WHERE email = ?', ['admin@globetrotter.app']);
+    if (existingAdmins.length === 0) {
+        const hash = await bcrypt.hash('admin123', 10);
+        await conn.query('INSERT INTO Users (name, email, password_hash, role) VALUES (?, ?, ?, ?)', ['Admin', 'admin@globetrotter.app', hash, 'admin']);
+        console.log('Admin user seeded (admin@globetrotter.app / admin123).');
+    }
+
     const [existingCities] = await conn.query('SELECT * FROM Cities');
     if (existingCities.length === 0) {
         await conn.query(`INSERT INTO Cities (name, country) VALUES 

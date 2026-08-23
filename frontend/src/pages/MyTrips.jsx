@@ -9,6 +9,8 @@ export default function MyTrips() {
     const [trips, setTrips] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
+    const [filterStatus, setFilterStatus] = useState('all');
+    const [sortBy, setSortBy] = useState('date_asc');
 
     useEffect(() => {
         const fetchTrips = async () => {
@@ -54,7 +56,26 @@ export default function MyTrips() {
     });
 
     const filterTrips = (tripList) => {
-        return tripList.filter(t => t.name.toLowerCase().includes(search.toLowerCase()) || (t.description && t.description.toLowerCase().includes(search.toLowerCase())));
+        let filtered = tripList.filter(t => t.name.toLowerCase().includes(search.toLowerCase()) || (t.description && t.description.toLowerCase().includes(search.toLowerCase())));
+        
+        if (filterStatus === 'public') {
+            filtered = filtered.filter(t => t.is_public);
+        } else if (filterStatus === 'private') {
+            filtered = filtered.filter(t => !t.is_public);
+        }
+        
+        filtered.sort((a, b) => {
+            if (sortBy === 'name_asc') {
+                return a.name.localeCompare(b.name);
+            } else if (sortBy === 'date_asc') {
+                return new Date(a.start_date || '2099-01-01') - new Date(b.start_date || '2099-01-01');
+            } else if (sortBy === 'date_desc') {
+                return new Date(b.start_date || '1970-01-01') - new Date(a.start_date || '1970-01-01');
+            }
+            return 0;
+        });
+        
+        return filtered;
     };
 
     const TripCard = ({ trip }) => (
@@ -129,15 +150,24 @@ export default function MyTrips() {
                     />
                 </div>
                 <div className="flex gap-2">
-                    <button className="px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2">
-                        <LayoutGrid className="w-4 h-4" /> Group by
-                    </button>
-                    <button className="px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2">
-                        <Filter className="w-4 h-4" /> Filter
-                    </button>
-                    <button className="px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2">
-                        <SortAsc className="w-4 h-4" /> Sort by...
-                    </button>
+                    <select 
+                        value={filterStatus}
+                        onChange={(e) => setFilterStatus(e.target.value)}
+                        className="px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 outline-none"
+                    >
+                        <option value="all">All Trips</option>
+                        <option value="public">Public</option>
+                        <option value="private">Private</option>
+                    </select>
+                    <select 
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        className="px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 outline-none"
+                    >
+                        <option value="date_asc">Date (Soonest)</option>
+                        <option value="date_desc">Date (Furthest)</option>
+                        <option value="name_asc">Name (A-Z)</option>
+                    </select>
                 </div>
             </div>
 

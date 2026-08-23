@@ -1,11 +1,12 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Map, Search, Users, User, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, Map, Search, Users, User, Settings, LogOut, CalendarDays } from 'lucide-react';
 
 export default function Sidebar({ handleLogout }) {
     const navItems = [
         { path: '/dashboard', icon: <LayoutDashboard className="w-5 h-5" />, label: 'Dashboard' },
         { path: '/trips', icon: <Map className="w-5 h-5" />, label: 'My Trips' },
+        { path: '/calendar', icon: <CalendarDays className="w-5 h-5" />, label: 'Calendar' },
         { path: '/search', icon: <Search className="w-5 h-5" />, label: 'Search Catalog' },
         { path: '/community', icon: <Users className="w-5 h-5" />, label: 'Community' },
         { path: '/profile', icon: <User className="w-5 h-5" />, label: 'Profile' },

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Mail, Shield, Save, LogOut, Camera, ArrowRight } from 'lucide-react';
+import { User, Mail, Shield, Save, LogOut, Camera, ArrowRight, Trash2, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
@@ -9,32 +9,72 @@ export default function UserProfile() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [bio, setBio] = useState('');
+    const [language, setLanguage] = useState('en');
     const [trips, setTrips] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
 
     useEffect(() => {
-        setName(localStorage.getItem('userName') || 'GlobeTrotter User');
-        setEmail('user@globetrotter.app'); // Mock email since it's not saved to localStorage in this demo
-
-        const fetchTrips = async () => {
+        const fetchUserData = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await axios.get('http://localhost:5000/api/trips', {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                setTrips(res.data);
+                if (!token) return navigate('/');
+
+                const config = { headers: { Authorization: `Bearer ${token}` } };
+                
+                const [profileRes, tripsRes] = await Promise.all([
+                    axios.get('http://localhost:5000/api/user/profile', config),
+                    axios.get('http://localhost:5000/api/trips', config)
+                ]);
+
+                setName(profileRes.data.name || '');
+                setEmail(profileRes.data.email || '');
+                setBio(profileRes.data.bio || '');
+                setLanguage(profileRes.data.language_preference || 'en');
+                setTrips(tripsRes.data);
             } catch (err) {
-                console.error("Failed to fetch trips", err);
+                console.error("Failed to fetch user data", err);
             } finally {
                 setLoading(false);
             }
         };
-        fetchTrips();
-    }, []);
+        fetchUserData();
+    }, [navigate]);
 
-    const handleSave = (e) => {
+    const handleSave = async (e) => {
         e.preventDefault();
-        alert("Profile updated successfully!");
+        setSaving(true);
+        try {
+            const token = localStorage.getItem('token');
+            await axios.put('http://localhost:5000/api/user/profile', {
+                name, bio, language_preference: language
+            }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            localStorage.setItem('userName', name); // Update local storage name
+            alert("Profile updated successfully!");
+        } catch (err) {
+            console.error(err);
+            alert("Failed to update profile");
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const handleDeleteAccount = async () => {
+        if (!window.confirm("Are you sure you want to delete your account? This action cannot be undone and all your trips will be deleted.")) return;
+        
+        try {
+            const token = localStorage.getItem('token');
+            await axios.delete('http://localhost:5000/api/user/account', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            localStorage.clear();
+            window.location.href = '/';
+        } catch (err) {
+            console.error(err);
+            alert("Failed to delete account");
+        }
     };
 
     const handleLogout = () => {
@@ -53,9 +93,13 @@ export default function UserProfile() {
             className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all flex flex-col h-[250px]"
         >
             <div className="h-32 bg-slate-100 dark:bg-slate-800 relative">
-                <div className="absolute inset-0 flex items-center justify-center font-black text-4xl text-slate-200 dark:text-slate-700 select-none">
-                    {trip.name.substring(0, 3).toUpperCase()}
-                </div>
+                {trip.cover_photo ? (
+                    <img src={trip.cover_photo} alt={trip.name} className="w-full h-full object-cover" />
+                ) : (
+                    <div className="absolute inset-0 flex items-center justify-center font-black text-4xl text-slate-200 dark:text-slate-700 select-none">
+                        {trip.name.substring(0, 3).toUpperCase()}
+                    </div>
+                )}
             </div>
             <div className="p-4 flex flex-col flex-grow">
                 <h4 className="font-bold text-slate-900 dark:text-white truncate">{trip.name}</h4>
@@ -71,13 +115,15 @@ export default function UserProfile() {
         </motion.div>
     );
 
+    if (loading) return <div className="flex justify-center items-center h-screen"><Loader2 className="w-10 h-10 text-blue-600 animate-spin" /></div>;
+
     return (
         <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 space-y-10">
             {/* User Details Section (Screen 7 Top) */}
             <div className="bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col md:flex-row p-8 gap-8 items-start">
                 <div className="relative group cursor-pointer shrink-0 mx-auto md:mx-0">
                     <div className="w-40 h-40 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-5xl font-bold text-white shadow-xl overflow-hidden border-4 border-white dark:border-slate-900">
-                        {name.charAt(0).toUpperCase()}
+                        {name ? name.charAt(0).toUpperCase() : 'U'}
                     </div>
                     <div className="absolute bottom-2 right-2 w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg border-2 border-white dark:border-slate-900 group-hover:bg-blue-700 transition-colors">
                         <Camera className="w-5 h-5" />
@@ -93,6 +139,31 @@ export default function UserProfile() {
                     </div>
                     
                     <form onSubmit={handleSave} className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="text-sm font-bold text-slate-500 uppercase tracking-wider pl-1 mb-1 block">Full Name</label>
+                                <input 
+                                    type="text"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    className="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:border-blue-500 transition-colors"
+                                />
+                            </div>
+                            <div>
+                                <label className="text-sm font-bold text-slate-500 uppercase tracking-wider pl-1 mb-1 block">Language Preference</label>
+                                <select 
+                                    value={language}
+                                    onChange={(e) => setLanguage(e.target.value)}
+                                    className="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:border-blue-500 transition-colors"
+                                >
+                                    <option value="en">English</option>
+                                    <option value="fr">French</option>
+                                    <option value="es">Spanish</option>
+                                    <option value="de">German</option>
+                                </select>
+                            </div>
+                        </div>
+                        
                         <div>
                             <label className="text-sm font-bold text-slate-500 uppercase tracking-wider pl-1 mb-1 block">Bio / Details</label>
                             <textarea 
@@ -103,13 +174,20 @@ export default function UserProfile() {
                                 placeholder="Write a short bio or user details here..."
                             />
                         </div>
-                        <div className="flex justify-end gap-3">
-                            <button type="button" onClick={handleLogout} className="px-6 py-2.5 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 font-bold transition-colors">
-                                Logout
+                        <div className="flex justify-between items-center pt-2">
+                            <button type="button" onClick={handleDeleteAccount} className="flex items-center gap-2 text-rose-500 hover:text-rose-600 font-bold transition-colors">
+                                <Trash2 className="w-4 h-4" /> Delete Account
                             </button>
-                            <button type="submit" className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-md transition-colors">
-                                Save Details
-                            </button>
+                            
+                            <div className="flex gap-3">
+                                <button type="button" onClick={handleLogout} className="px-6 py-2.5 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 font-bold transition-colors">
+                                    Logout
+                                </button>
+                                <button type="submit" disabled={saving} className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-md transition-colors flex items-center gap-2">
+                                    {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+                                    Save Details
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>

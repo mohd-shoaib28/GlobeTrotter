@@ -10,7 +10,7 @@ export default function Navbar({ darkMode, setDarkMode, isAuthenticated, setAuth
         <header className="sticky top-0 z-40 backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 lg:pl-64">
             <div className="px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
 
-                <div className="flex items-center gap-3 cursor-pointer lg:hidden" onClick={() => navigate(isAuthenticated ? '/dashboard' : '/')}>
+                <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate(isAuthenticated ? '/dashboard' : '/')}>
                     <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white">
                         <Compass className="w-5 h-5" />
                     </div>
@@ -28,9 +28,14 @@ export default function Navbar({ darkMode, setDarkMode, isAuthenticated, setAuth
                     </button>
                     
                     {!isAuthenticated && (
-                        <button onClick={() => setAuthModal('login')} className="text-sm font-semibold px-4 py-2 bg-blue-600 text-white rounded-xl shadow-md hover:bg-blue-700 transition-colors">
-                            Sign In
-                        </button>
+                        <div className="flex items-center gap-3">
+                            <button onClick={() => setAuthModal('login')} className="text-sm font-bold text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">
+                                Admin Login
+                            </button>
+                            <button onClick={() => setAuthModal('login')} className="text-sm font-semibold px-4 py-2 bg-blue-600 text-white rounded-xl shadow-md hover:bg-blue-700 transition-colors">
+                                Sign In
+                            </button>
+                        </div>
                     )}
 
                     {isAuthenticated && (
@@ -50,6 +55,7 @@ export default function Navbar({ darkMode, setDarkMode, isAuthenticated, setAuth
                     <div className="flex flex-col space-y-2">
                         <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 rounded-xl font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Dashboard</Link>
                         <Link to="/trips" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 rounded-xl font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">My Trips</Link>
+                        <Link to="/calendar" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 rounded-xl font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Calendar</Link>
                         <Link to="/search" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 rounded-xl font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Search Catalog</Link>
                         <Link to="/community" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 rounded-xl font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Community</Link>
                         <Link to="/profile" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 rounded-xl font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Profile</Link>

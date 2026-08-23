@@ -157,7 +157,7 @@ export default function ItineraryView() {
                                                     Arrival in {stop.city}
                                                 </div>
                                                 <div className="w-32 p-4 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-right text-slate-500">
-                                                    $0
+                                                    ₹0
                                                 </div>
                                             </div>
                                         )}
@@ -169,7 +169,7 @@ export default function ItineraryView() {
                                                         {activity.name} {activity.time && <span className="text-sm font-normal text-slate-400 ml-2">({activity.time})</span>}
                                                     </div>
                                                     <div className="w-24 sm:w-32 p-4 sm:p-5 rounded-2xl border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm font-bold text-slate-700 dark:text-slate-300 text-right">
-                                                        ${parseFloat(activity.cost).toFixed(0)}
+                                                        ₹{parseFloat(activity.cost).toFixed(0)}
                                                     </div>
                                                 </div>
                                                 
@@ -201,7 +201,7 @@ export default function ItineraryView() {
                                 {stop.activities?.map(act => (
                                     <div key={act.activity_id} className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl text-sm font-semibold flex justify-between">
                                         <span>{act.time} {act.name}</span>
-                                        <span className="text-blue-600">${act.cost}</span>
+                                        <span className="text-blue-600">₹{act.cost}</span>
                                     </div>
                                 ))}
                             </div>

@@ -68,10 +68,10 @@ export default function BudgetView() {
                             <div className="p-2 bg-white/10 rounded-lg"><Wallet className="w-5 h-5 text-blue-400" /></div>
                             <span className="font-semibold text-slate-300">Total Estimated Cost</span>
                         </div>
-                        <h2 className="text-5xl font-black">${totalCost.toFixed(2)}</h2>
+                        <h2 className="text-5xl font-black">₹{totalCost.toFixed(2)}</h2>
                         <div className="mt-6 pt-6 border-t border-white/10 flex items-center justify-between text-sm">
                             <span className="text-slate-400">Avg. Per Day</span>
-                            <span className="font-bold text-emerald-400">~${(totalCost / (trip.stops?.length || 1)).toFixed(2)}</span>
+                            <span className="font-bold text-emerald-400">~₹{(totalCost / (trip.stops?.length || 1)).toFixed(2)}</span>
                         </div>
                     </div>
 
@@ -117,7 +117,7 @@ export default function BudgetView() {
                                                 <div className={`w-3 h-3 rounded-full ${colorClass}`}></div>
                                                 <span className="font-bold text-slate-700 dark:text-slate-200">{cat}</span>
                                             </div>
-                                            <span className="font-semibold text-slate-900 dark:text-white">${amount.toFixed(2)} <span className="text-xs text-slate-400 ml-1">({percentage.toFixed(0)}%)</span></span>
+                                            <span className="font-semibold text-slate-900 dark:text-white">₹{amount.toFixed(2)} <span className="text-xs text-slate-400 ml-1">({percentage.toFixed(0)}%)</span></span>
                                         </div>
                                         <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-3">
                                             <div className={`${colorClass} h-3 rounded-full`} style={{ width: `${percentage}%` }}></div>

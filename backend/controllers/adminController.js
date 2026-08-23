@@ -86,3 +86,20 @@ exports.getPopularActivities = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch popular activities' });
     }
 };
+
+exports.getUserTrips = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const query = `
+            SELECT t.*, u.name as author_name, u.email as author_email 
+            FROM Trips t 
+            JOIN Users u ON t.user_id = u.user_id
+            WHERE t.user_id = ?
+            ORDER BY t.created_at DESC
+        `;
+        const [trips] = await db.query(query, [id]);
+        res.json(trips);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch user trips' });
+    }
+};

@@ -272,7 +272,7 @@ export default function ItineraryBuilder() {
                                         </label>
                                         <div className="relative">
                                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                                <span className="text-slate-400 font-bold">$</span>
+                                                <span className="text-slate-400 font-bold">₹</span>
                                             </div>
                                             <input
                                                 type="number"
@@ -313,7 +313,7 @@ export default function ItineraryBuilder() {
                                                     />
                                                     <div className="relative w-28">
                                                         <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
-                                                            <span className="text-slate-400 text-xs font-bold">$</span>
+                                                            <span className="text-slate-400 text-xs font-bold">₹</span>
                                                         </div>
                                                         <input
                                                             type="number"

@@ -130,7 +130,7 @@ export default function PublicItinerary() {
                                                 {activity.name}
                                             </div>
                                             <div className="text-blue-600 dark:text-blue-400 font-black">
-                                                ${parseFloat(activity.cost).toFixed(0)}
+                                                ₹{parseFloat(activity.cost).toFixed(0)}
                                             </div>
                                         </div>
                                     ))}

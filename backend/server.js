@@ -42,6 +42,7 @@ const adminController = require('./controllers/adminController');
 app.get('/api/admin/stats', authMiddleware, adminMiddleware, adminController.getStats);
 app.get('/api/admin/users', authMiddleware, adminMiddleware, adminController.getUsers);
 app.delete('/api/admin/users/:id', authMiddleware, adminMiddleware, adminController.deleteUser);
+app.get('/api/admin/users/:id/trips', authMiddleware, adminMiddleware, adminController.getUserTrips);
 app.get('/api/admin/trips', authMiddleware, adminMiddleware, adminController.getAllTrips);
 app.get('/api/admin/popular-cities', authMiddleware, adminMiddleware, adminController.getPopularCities);
 app.get('/api/admin/popular-activities', authMiddleware, adminMiddleware, adminController.getPopularActivities);

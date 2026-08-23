@@ -173,9 +173,9 @@ export default function SearchPage() {
                                 className="px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 outline-none"
                             >
                                 <option value="">Any Cost</option>
-                                <option value="50">Under $50</option>
-                                <option value="100">Under $100</option>
-                                <option value="200">Under $200</option>
+                                <option value="50">Under ₹50</option>
+                                <option value="100">Under ₹100</option>
+                                <option value="200">Under ₹200</option>
                             </select>
                         </>
                     ) : (
@@ -219,7 +219,7 @@ export default function SearchPage() {
                                     </span>
                                     {activeTab === 'activities' && (
                                         <>
-                                            <span className="flex items-center gap-1.5"><DollarSign className="w-4 h-4" /> Est. ${item.estimated_cost}</span>
+                                            <span className="flex items-center gap-1.5"><DollarSign className="w-4 h-4" /> Est. ₹{item.estimated_cost}</span>
                                             <span className="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-xs">{item.category}</span>
                                         </>
                                     )}

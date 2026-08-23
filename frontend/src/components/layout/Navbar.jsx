@@ -28,14 +28,9 @@ export default function Navbar({ darkMode, setDarkMode, isAuthenticated, setAuth
                     </button>
                     
                     {!isAuthenticated && (
-                        <div className="flex items-center gap-3">
-                            <button onClick={() => setAuthModal('login')} className="text-sm font-bold text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">
-                                Admin Login
-                            </button>
-                            <button onClick={() => setAuthModal('login')} className="text-sm font-semibold px-4 py-2 bg-blue-600 text-white rounded-xl shadow-md hover:bg-blue-700 transition-colors">
-                                Sign In
-                            </button>
-                        </div>
+                        <button onClick={() => setAuthModal('login')} className="text-sm font-semibold px-4 py-2 bg-blue-600 text-white rounded-xl shadow-md hover:bg-blue-700 transition-colors">
+                            Sign In
+                        </button>
                     )}
 
                     {isAuthenticated && (

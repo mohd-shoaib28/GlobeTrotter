@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Loader2, Search, Trash2, Shield, User } from 'lucide-react';
+import { Loader2, Search, Trash2, Shield, User, Map, ExternalLink, X, Eye } from 'lucide-react';
 
 export default function ManageUsers() {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
+    const [selectedUserForTrips, setSelectedUserForTrips] = useState(null);
+    const [userTrips, setUserTrips] = useState([]);
+    const [loadingTrips, setLoadingTrips] = useState(false);
 
     const fetchUsers = async () => {
         try {
@@ -36,6 +39,22 @@ export default function ManageUsers() {
             setUsers(users.filter(u => u.user_id !== id));
         } catch (err) {
             alert("Failed to delete user.");
+        }
+    };
+
+    const handleViewTrips = async (user) => {
+        setSelectedUserForTrips(user);
+        setLoadingTrips(true);
+        try {
+            const token = localStorage.getItem('token');
+            const res = await axios.get(`http://localhost:5000/api/admin/users/${user.user_id}/trips`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setUserTrips(res.data);
+        } catch (err) {
+            alert("Failed to load user trips.");
+        } finally {
+            setLoadingTrips(false);
         }
     };
 
@@ -103,6 +122,13 @@ export default function ManageUsers() {
                                     </td>
                                     <td className="px-6 py-4 text-right">
                                         <button 
+                                            onClick={() => handleViewTrips(user)}
+                                            className="p-2 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/30 rounded-lg transition-colors mr-2"
+                                            title="View User Trips"
+                                        >
+                                            <Eye className="w-4 h-4" />
+                                        </button>
+                                        <button 
                                             onClick={() => handleDelete(user.user_id)}
                                             disabled={user.role === 'admin'}
                                             className="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-lg transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
@@ -120,6 +146,59 @@ export default function ManageUsers() {
                     <div className="p-8 text-center text-slate-500 font-medium">No users found.</div>
                 )}
             </div>
+
+            {/* View Trips Modal */}
+            {selectedUserForTrips && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+                    <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 w-full max-w-2xl max-h-[80vh] overflow-y-auto relative shadow-2xl">
+                        <button 
+                            onClick={() => setSelectedUserForTrips(null)}
+                            className="absolute top-6 right-6 p-2 bg-slate-100 dark:bg-slate-800 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+                        
+                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+                            {selectedUserForTrips.name}'s Trips
+                        </h2>
+                        <p className="text-slate-500 mb-6 text-sm">Viewing all trips created by this user.</p>
+                        
+                        {loadingTrips ? (
+                            <div className="flex justify-center p-8"><Loader2 className="w-8 h-8 animate-spin text-blue-600" /></div>
+                        ) : userTrips.length === 0 ? (
+                            <div className="text-center p-8 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700 text-slate-500">
+                                This user hasn't created any trips yet.
+                            </div>
+                        ) : (
+                            <div className="space-y-4">
+                                {userTrips.map(trip => (
+                                    <div key={trip.trip_id} className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center p-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/30">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
+                                                <Map className="w-5 h-5" />
+                                            </div>
+                                            <div>
+                                                <div className="font-bold text-slate-900 dark:text-white">{trip.name}</div>
+                                                <div className="text-xs text-slate-500">
+                                                    {trip.start_date ? new Date(trip.start_date).toLocaleDateString() : 'Unscheduled'}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <a 
+                                            href={`/itinerary/${trip.trip_id}`} 
+                                            target="_blank" 
+                                            rel="noreferrer"
+                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600 rounded-lg text-sm font-semibold transition-colors"
+                                        >
+                                            View Itinerary <ExternalLink className="w-3.5 h-3.5" />
+                                        </a>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

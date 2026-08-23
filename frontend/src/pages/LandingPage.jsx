@@ -55,14 +55,6 @@ export default function LandingPage({ setAuthModal }) {
                         >
                             Sign In
                         </motion.button>
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => setAuthModal('login')}
-                            className="px-8 py-3.5 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold border border-slate-900 dark:border-white shadow-sm flex items-center gap-2"
-                        >
-                            Admin Login
-                        </motion.button>
                     </div>
                 </motion.div>
             </div>
@@ -83,11 +75,11 @@ export default function LandingPage({ setAuthModal }) {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {[
                         { icon: <MapPin />, title: "Manage Stops", desc: "Easily add travel stops, assign durations, and order your journey route." },
-                        { icon: <Search />, title: "Explore Cities", desc: "Search through global destinations and discover activities of interest." },
-                        { icon: <DollarSign />, title: "Live Budgeting", desc: "Get automatic trip budget estimations and cost breakdowns by category." },
+                        { icon: <Search />, title: "Explore Cities", desc: "Search through top Indian destinations and discover localized activities of interest." },
+                        { icon: <DollarSign />, title: "Live Budgeting (INR)", desc: "Get automatic trip budget estimations in INR (₹) and view cost breakdowns." },
                         { icon: <Calendar />, title: "Visualize Timelines", desc: "Review your full day-wise plan in a beautiful, structured visual calendar." },
                         { icon: <Share2 />, title: "Share Plans", desc: "Share your travel plans publicly or collaborate directly with friends." },
-                        { icon: <LayoutDashboard />, title: "Smart Dashboard", desc: "Navigate your upcoming trips, popular cities, and manage your account." }
+                        { icon: <LayoutDashboard />, title: "Smart Dashboards", desc: "Track upcoming trips as a user, or manage global trends as an Admin." }
                     ].map((feature, idx) => (
                         <motion.div key={idx} variants={fadeIn} className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-blue-500 transition-colors shadow-sm hover:shadow-xl group">
                             <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/40 text-blue-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
